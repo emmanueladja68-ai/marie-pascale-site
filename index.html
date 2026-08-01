@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Naiseku</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body {
+    width: 100%;
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    padding: clamp(0.75rem, 4vw, 2rem) 0;
+  }
+
+  .card {
+    background: white;
+    width: min(92%, 480px);
+    padding: clamp(1.25rem, 6vw, 2.5rem) clamp(1rem, 5vw, 1.75rem);
+    border-radius: clamp(1rem, 4vw, 1.75rem);
+    text-align: center;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.22);
+  }
+
+  .heart {
+    font-size: clamp(1.75rem, 8vw, 3rem);
+    animation: beat 1s infinite;
+  }
+
+  h1 {
+    color: #ff4f8a;
+    font-size: clamp(1.3rem, 6vw, 2rem);
+    margin-bottom: clamp(0.5rem, 2vw, 0.75rem);
+  }
+
+  p {
+    color: #555;
+    font-size: clamp(0.9rem, 3.5vw, 1.125rem);
+    margin-bottom: clamp(0.9rem, 4vw, 1.5rem);
+  }
+
+  h2 {
+    color: #333;
+    font-size: clamp(1rem, 4.5vw, 1.375rem);
+    margin-top: clamp(1rem, 4vw, 1.75rem);
+  }
+
+  .buttons {
+    margin-top: clamp(1rem, 4vw, 1.75rem);
+    height: clamp(3.25rem, 15vw, 5.5rem);
+    position: relative;
+  }
+
+  button {
+    border: none;
+    padding: clamp(0.65rem, 3vw, 0.9rem) clamp(1.1rem, 6vw, 2rem);
+    border-radius: clamp(1.25rem, 6vw, 2rem);
+    font-size: clamp(0.875rem, 3.5vw, 1.125rem);
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+
+  #yesBtn {
+    background: #ff4f8a;
+    color: white;
+    margin-right: clamp(0.5rem, 3vw, 1rem);
+  }
+
+  #yesBtn:hover {
+    transform: scale(1.1);
+    background: #ff3f76;
+  }
+
+  #noBtn {
+    background: #eeeeee;
+    color: #333;
+    position: absolute;
+  }
+
+  #smallText {
+    font-size: clamp(0.75rem, 3vw, 0.9375rem);
+    color: #999;
+  }
+
+  @keyframes beat {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+  }
+
+  /* Cartes video pour le choix de la date */
+  .video-options {
+    margin-top: clamp(0.75rem, 4vw, 1.25rem);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.65rem, 3vw, 1rem);
+  }
+
+  .video-card {
+    position: relative;
+    border-radius: clamp(0.75rem, 4vw, 1.25rem);
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    transition: transform 0.2s ease;
+  }
+
+  .video-card:hover {
+    transform: scale(1.03);
+  }
+
+  .video-card video {
+    display: block;
+    width: 100%;
+    height: clamp(8rem, 30vw, 13rem);
+    object-fit: cover;
+    background: #000;
+    pointer-events: none;
+  }
+
+  .video-title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: clamp(0.65rem, 3vw, 1rem) clamp(0.5rem, 2.5vw, 0.75rem) clamp(0.5rem, 2.5vw, 0.75rem);
+    background: linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0));
+    color: #fff;
+    font-size: clamp(0.8rem, 3vw, 1rem);
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .back-btn {
+    display: block;
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 4px 0;
+    margin: 0 0 10px;
+    text-align: left;
+    text-decoration: underline;
+    touch-action: manipulation;
+  }
+
+  .back-btn:hover {
+    color: #ff4f8a;
+  }
+
+  #whatsappBtn {
+    transition: 0.2s ease;
+  }
+
+  #whatsappBtn:hover {
+    background: #1ebc59 !important;
+    transform: scale(1.03);
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="heart">💖💖💖</div>
+
+  <h1>Dr Marie Pascale. O</h1>
+
+  <p id="message">Coucou Mapo, j'espere tu vas bien?😅</p>
+
+  <h2>Ça te dirait de se voir une fois?</h2>
+
+  <div class="buttons">
+    <button id="yesBtn">Yes 😍</button>
+    <button id="noBtn">No 😢</button>
+  </div>
+
+  <p id="smallText">N'oublie pas que je t'aime, alors reflechie bien😏</p>
+</div>
+
+<script>
+  let yesBtn, noBtn, smallText;
+  let noCount = 0;
+
+  function moveNoButton() {
+    noCount++;
+
+    const maxX = window.innerWidth - noBtn.offsetWidth;
+    const maxY = window.innerHeight - noBtn.offsetHeight;
+
+    const randomX = Math.floor(Math.random() * maxX);
+    const randomY = Math.floor(Math.random() * maxY);
+
+    noBtn.style.position = "fixed";
+    noBtn.style.left = `${randomX}px`;
+    noBtn.style.top = `${randomY}px`;
+
+    if (noCount === 1) {
+      smallText.textContent = "N'appuie pas sur No😏";
+    } else if (noCount === 2) {
+      smallText.textContent = "Nonnn!!!, pas là! appuie sur Yes😏";
+    } else if (noCount === 3) {
+      smallText.textContent = "Je dis non, pas ça😅";
+    } else {
+      smallText.textContent = "Mais non pas là, appuie juste Yes😂😂";
+    }
+  }
+
+  // (Ré)affiche l'écran de départ (yes/no) et rebranche les écouteurs
+  function showStartStep() {
+    document.body.innerHTML = `
+      <div class="card">
+        <div class="heart">💖💖💖</div>
+        <h1>Dr Marie Pascale. O</h1>
+        <p id="message">Coucou Mapo, j'espere tu vas bien?😅</p>
+        <h2>Ça te dirait de se voir une fois?</h2>
+        <div class="buttons">
+          <button id="yesBtn">Yes 😍</button>
+          <button id="noBtn">No 😢</button>
+        </div>
+        <p id="smallText">N'oublie pas que je t'aime, alors reflechie bien😏</p>
+      </div>
+    `;
+    attachStartListeners();
+  }
+
+  function attachStartListeners() {
+    yesBtn = document.getElementById("yesBtn");
+    noBtn = document.getElementById("noBtn");
+    smallText = document.getElementById("smallText");
+    noCount = 0;
+
+    noBtn.addEventListener("mouseover", moveNoButton);
+    noBtn.addEventListener("touchstart", moveNoButton);
+    yesBtn.addEventListener("click", showDateStep);
+  }
+
+  // Modifie ces valeurs pour choisir tes propres dates et lieux
+  const dateOptions = [
+    "Samedi 22 août, 19h chez le CHEF",
+    "Dimanche 23 août, 14h à MOAYEKRO",
+    "Vendredi 28 août, 20h, chez PALM GARDEN"
+  ];
+
+  const restaurantOptions = [
+    "🍝 La Petite Table (Italien)",
+    "🍣 Sushi Yama",
+    "🥐 Café des Amoureux (Brunch)"
+  ];
+
+  // Video utilisee pour illustrer chaque option de date (lecture auto, en boucle, sans son)
+
+  // Association date -> video (la video du dimanche 23 aout est celle envoyee par Mapo)
+
+  const dateVideoMap = {
+    "Samedi 22 août, 19h chez le CHEF": "/videos/defaultVideo.mp4",
+    "Dimanche 23 août, 14h à MOAYEKRO": "/videos/sundayVideo.mp4",
+    "Vendredi 28 août, 20h, chez PALM GARDEN": "/videos/fridayVideo.mp4"
+  };
+
+
+  // Videos de restaurant pour le rendez-vous du Samedi 22 aout (lecture auto, muet, boucle, sous-titre en bas)
+  const restaurantVideoMap = {
+    "Samedi 22 août, 19h chez le CHEF": [
+      { src: "/videos/pizzaVideo.mp4", caption: "🍕 Pizza" },
+      { src: "/videos/plancheVideo.mp4", caption: "🍽️ Planche XXL" },
+      { src: "/videos/tacosVideo.mp4", caption: "🌮 Tacos" }
+    ],
+    "Dimanche 23 août, 14h à MOAYEKRO": [
+      { src: "/videos/foutouVideo.mp4", caption: "🍲 Foutou" },
+      { src: "/videos/foufouVideo.mp4", caption: "🍚 Foufou" },
+      { src: "/videos/placaliVideo.mp4", caption: "🍛 Placali" }
+    ],
+    "Vendredi 28 août, 20h, chez PALM GARDEN": [
+      { src: "/videos/glaceVideo.mp4", caption: "🍨 Glace" },
+      { src: "/videos/coktailVideo.mp4", caption: "🍹 Cocktail" },
+      { src: "/videos/poissonVideo.mp4", caption: "🐟 Poisson braisé" }
+    ]
+  };
+
+  function showDateStep() {
+    document.body.innerHTML = `
+      <div class="card">
+        <button class="back-btn" id="backBtn">← Retour</button>
+        <div class="heart">💖</div>
+        <h1>Super! 🎉</h1>
+        <p id="message">Je savais que tu dirais oui ! C'est entendu ! 🥰</p>
+        <h2>C'est quand qu'on se voit ?</h2>
+        <div class="video-options" id="dateButtons"></div>
+      </div>
+    `;
+
+    document.getElementById("backBtn").addEventListener("click", showStartStep);
+
+    const container = document.getElementById("dateButtons");
+    dateOptions.forEach((date) => {
+      const card = document.createElement("div");
+      card.className = "video-card";
+
+      const video = document.createElement("video");
+      video.src = dateVideoMap[date] || "/videos/defaultVideo.mp4";
+      video.autoplay = true;
+      video.muted = true;
+      video.defaultMuted = true;
+      video.setAttribute("muted", "");
+      video.loop = true;
+      video.playsInline = true;
+      video.setAttribute("webkit-playsinline", "true");
+      video.setAttribute("autoplay", "");
+
+      const title = document.createElement("div");
+      title.className = "video-title";
+      title.textContent = date;
+
+      card.appendChild(video);
+      card.appendChild(title);
+      card.addEventListener("click", () => showRestaurantStep(date));
+      container.appendChild(card);
+
+      // Assure la lecture automatique meme si le navigateur bloque l'autoplay initial
+      video.play().catch(() => {});
+    });
+  }
+
+  function showRestaurantStep(chosenDate) {
+    const videoPlaces = restaurantVideoMap[chosenDate];
+
+    if (videoPlaces) {
+      // Affichage en videos avec sous-titre (legende) en bas de chaque video
+      document.body.innerHTML = `
+        <div class="card">
+          <button class="back-btn" id="backBtn">← Retour</button>
+          <div class="heart">💖</div>
+          <h1>Parfait ! 🎉</h1>
+          <p id="message">Rendez-vous le <strong>${chosenDate}</strong> ✅</p>
+          <h2>Et pour manger, on mange quoi?</h2>
+          <div class="video-options" id="placeButtons"></div>
+        </div>
+      `;
+
+      document.getElementById("backBtn").addEventListener("click", showDateStep);
+
+      const container = document.getElementById("placeButtons");
+      videoPlaces.forEach((place) => {
+        const card = document.createElement("div");
+        card.className = "video-card";
+
+        const video = document.createElement("video");
+        video.src = place.src;
+        video.autoplay = true;
+        video.muted = true;
+        video.defaultMuted = true;
+        video.setAttribute("muted", "");
+        video.loop = true;
+        video.playsInline = true;
+        video.setAttribute("webkit-playsinline", "true");
+        video.setAttribute("autoplay", "");
+
+        const caption = document.createElement("div");
+        caption.className = "video-title";
+        caption.textContent = place.caption;
+
+        card.appendChild(video);
+        card.appendChild(caption);
+        card.addEventListener("click", () => showFinalStep(chosenDate, place.caption));
+        container.appendChild(card);
+
+        video.play().catch(() => {});
+      });
+    } else {
+      // Affichage classique en boutons pour les autres dates
+      document.body.innerHTML = `
+        <div class="card">
+          <button class="back-btn" id="backBtn">← Retour</button>
+          <div class="heart">💖</div>
+          <h1>Parfait ! 🎉</h1>
+          <p id="message">Rendez-vous le <strong>${chosenDate}</strong> ✅</p>
+          <h2>Et pour manger, on mange quoi ?</h2>
+          <div class="buttons" id="placeButtons" style="height:auto; display:flex; flex-direction:column; gap:clamp(0.6rem,3vw,1rem); position:static;">
+          </div>
+        </div>
+      `;
+
+      document.getElementById("backBtn").addEventListener("click", showDateStep);
+
+      const container = document.getElementById("placeButtons");
+      restaurantOptions.forEach((place) => {
+        const btn = document.createElement("button");
+        btn.textContent = place;
+        btn.style.background = "#ff4f8a";
+        btn.style.color = "white";
+        btn.style.width = "100%";
+        btn.addEventListener("click", () => showFinalStep(chosenDate, place));
+        container.appendChild(btn);
+      });
+    }
+  }
+
+  function showFinalStep(chosenDate, chosenPlace) {
+    const whatsappNumber = "2250788039803";
+    const stripEmojis = (text) => text
+      .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}\u{2B00}-\u{2BFF}]/gu, "")
+      .replace(/\s+/g, " ")
+      .trim();
+    const cleanDate = stripEmojis(chosenDate);
+    const cleanPlace = stripEmojis(chosenPlace);
+    const whatsappMessage = `Coucou c'est Mapo, c'est valide pour notre rendez-vous !\nDate : ${cleanDate}\nLieu : ${cleanPlace}\nJ'ai hate d'y etre !`;
+    const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+
+    document.body.innerHTML = `
+      <div class="card">
+        <button class="back-btn" id="backBtn">← Retour</button>
+        <div class="heart">💖</div>
+        <h1>C'est noté ! 🥰</h1>
+        <p id="message">
+          📅 ${chosenDate}<br>
+          📍 ${chosenPlace}<br><br>
+          J'ai hâte d'y être !
+        </p>
+        <video src="/videos/finalVideo.mp4" autoplay controls playsinline style="width:100%;border-radius:clamp(0.65rem,4vw,1.1rem);margin-top:clamp(0.65rem,4vw,1.25rem);"></video>
+        <a id="whatsappBtn" href="${whatsappLink}" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:white;text-decoration:none;font-weight:bold;padding:clamp(0.65rem,3vw,0.9rem) clamp(1.1rem,6vw,2rem);border-radius:clamp(1.25rem,6vw,2rem);margin-top:clamp(0.9rem,4vw,1.5rem);font-size:clamp(0.875rem,3.5vw,1.125rem);">
+          📲 Envoyer sur WhatsApp
+        </a>
+      </div>
+    `;
+    document.getElementById("backBtn").addEventListener("click", () => showRestaurantStep(chosenDate));
+    const finalVideoEl = document.querySelector("video");
+    if (finalVideoEl) {
+      finalVideoEl.muted = false;
+      const playPromise = finalVideoEl.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          finalVideoEl.muted = true;
+          finalVideoEl.play();
+        });
+      }
+    }
+  }
+
+  attachStartListeners();
+</script>
+
+</body>
+</html>
